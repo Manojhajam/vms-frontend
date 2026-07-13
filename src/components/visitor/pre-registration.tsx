@@ -16,9 +16,24 @@ export default function PreRegistrationForm() {
   const [submitted, setSubmitted] = useState(false)
   const [submittedName, setSubmittedName] = useState("")
 
-  const onFinish = (values: PreRegistrationFormData) => {
-    setSubmittedName(values.full_name)
-    setSubmitted(true)
+  const onFinish = async (values: PreRegistrationFormData) => {
+    try{
+        const response =await fetch("http://localhost:4000/visitors", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(values),
+        })
+        if (response.ok) {
+          setSubmittedName(values.full_name)
+          setSubmitted(true)
+        } else {
+          console.error("Failed to submit pre-registration")
+        }
+    }catch (error) {  
+      console.error("Error submitting pre-registration", error)
+  }
   }
 
   if (submitted) {
