@@ -23,6 +23,9 @@ function Navbar() {
           <a href="#how-it-works" className="text-sm font-medium text-gray-600 transition-colors hover:text-gray-900 dark:text-gray-400 dark:hover:text-white">
             How It Works
           </a>
+          <Link href="/pre-registration" className="text-sm font-medium text-gray-600 transition-colors hover:text-gray-900 dark:text-gray-400 dark:hover:text-white">
+            Pre-Registration
+          </Link>
         </div>
 
         <div className="flex items-center gap-3">
@@ -100,6 +103,7 @@ function Features() {
       title: "Pre-Registration",
       description:
         "Visitors can pre-register before arriving. Hosts receive instant notifications and visitors get a digital pass for seamless entry.",
+        route: "/pre-registration"
     },
     {
       icon: (
@@ -126,7 +130,8 @@ function Features() {
         </div>
         <div className="mt-16 grid gap-8 sm:grid-cols-2">
           {features.map((feature) => (
-            <div
+            <Link
+              href={feature.route ?? '/'}
               key={feature.title}
               className="group rounded-2xl border border-gray-200 bg-gray-50 p-8 transition-all hover:border-blue-200 hover:shadow-lg hover:shadow-blue-600/5 dark:border-gray-800 dark:bg-gray-900 dark:hover:border-blue-800"
             >
@@ -139,7 +144,7 @@ function Features() {
               <p className="mt-3 leading-relaxed text-gray-600 dark:text-gray-400">
                 {feature.description}
               </p>
-            </div>
+            </Link>
           ))}
         </div>
       </div>
