@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import { Form, Input, Select, Button, Result } from "antd"
+import apiClient from "@/lib/api/apiClient"
 
 interface PreRegistrationFormData {
   full_name: string
@@ -13,51 +14,15 @@ interface PreRegistrationFormData {
 
 export default function PreRegistrationForm() {
   const [form] = Form.useForm<PreRegistrationFormData>()
-  const [submitted, setSubmitted] = useState(false)
-  const [submittedName, setSubmittedName] = useState("")
 
   const onFinish = async (values: PreRegistrationFormData) => {
-    try{
-        const response =await fetch("http://localhost:4000/visitors", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(values),
-        })
-        if (response.ok) {
-          setSubmittedName(values.full_name)
-          setSubmitted(true)
-        } else {
-          console.error("Failed to submit pre-registration")
-        }
-    }catch (error) {  
-      console.error("Error submitting pre-registration", error)
-  }
+    try {
+      await apiClient.post("/visitors", values)
+    } catch {
+      // Error notification handled by apiClient interceptor
+    }
   }
 
-  if (submitted) {
-    return (
-      <div className="mx-auto max-w-lg">
-        <Result
-          status="success"
-          title="Pre-Registration Successful"
-          subTitle={`Thank you, ${submittedName}. Your pre-registration has been submitted.`}
-          extra={
-            <Button
-              type="primary"
-              onClick={() => {
-                form.resetFields()
-                setSubmitted(false)
-              }}
-            >
-              Register Another Visitor
-            </Button>
-          }
-        />
-      </div>
-    )
-  }
 
   return (
     <div className="mx-auto max-w-lg">

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { ThemeProvider } from "@/lib/theme/theme-provider";
+import { App as AntdApp } from "antd";
 
 export const metadata: Metadata = {
   title: "VMS",
@@ -15,7 +16,9 @@ export default function RootLayout({
   return (
     <html lang="en" className="h-full antialiased" suppressHydrationWarning>
       <body className="min-h-full flex flex-col">
-        <ThemeProvider>{children}</ThemeProvider>
+        <ThemeProvider>
+          <AntdApp>{children}</AntdApp>
+        </ThemeProvider>
       </body>
     </html>
   );
