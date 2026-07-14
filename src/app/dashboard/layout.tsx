@@ -3,6 +3,7 @@
 import { useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { getAuthToken } from "@/lib/api/auth"
+import DashboardSidebar from "@/components/dashboard/sidebar"
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter()
@@ -13,5 +14,5 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     }
   }, [router])
 
-  return <>{children}</>
+  return <DashboardSidebar>{children}</DashboardSidebar>
 }
