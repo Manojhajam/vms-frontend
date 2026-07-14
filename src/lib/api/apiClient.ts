@@ -1,8 +1,8 @@
 "use client"
 
 import axios from "axios"
-import { notification } from "antd"
 import { API_CONFIG } from "./config"
+import { getNotification } from "./notification"
 
 const apiClient = axios.create(API_CONFIG)
 
@@ -22,7 +22,7 @@ apiClient.interceptors.request.use(
 apiClient.interceptors.response.use(
   (response) => {
     if (response.config.method !== "get" && response.data?.message) {
-      notification.success({
+      getNotification()?.success({
         description: response.data.message,
         duration: 3,
       })
@@ -31,6 +31,7 @@ apiClient.interceptors.response.use(
   },
   (error) => {
     const status = error.response?.status
+    const notify = getNotification()
 
     if (status === 401) {
       if (typeof window !== "undefined") {
@@ -39,25 +40,25 @@ apiClient.interceptors.response.use(
         window.location.href = "/login"
       }
     } else if (status === 403 && error.config?.method?.toLowerCase() !== "get") {
-      notification.error({
+      notify?.error({
         message: "Access Denied",
         description: error.response?.data?.message || "You don't have permission for this action.",
         duration: 4,
       })
     } else if (status >= 500) {
-      notification.error({
+      notify?.error({
         message: "Server Error",
         description: error.response?.data?.message || "Something went wrong. Please try again later.",
         duration: 4,
       })
     } else if (status && status >= 400) {
-      notification.error({
+      notify?.error({
         message: "Request Failed",
         description: error.response?.data?.message || error.message || "An unexpected error occurred.",
         duration: 4,
       })
     } else {
-      notification.error({
+      notify?.error({
         message: "Network Error",
         description: "Unable to connect to the server. Please check your connection.",
         duration: 4,
