@@ -38,7 +38,7 @@ apiClient.interceptors.response.use(
       const isLoginRequest = error.config?.url === "/auth/login"
       if (isLoginRequest) {
         notify?.error({
-          message: "Login Failed",
+          title: "Login Failed",
           description: error.response?.data?.message || "Invalid email or password.",
           duration: 4,
         })
@@ -50,25 +50,25 @@ apiClient.interceptors.response.use(
       }
     } else if (status === 403 && error.config?.method?.toLowerCase() !== "get") {
       notify?.error({
-        message: "Access Denied",
+        title: "Access Denied",
         description: error.response?.data?.message || "You don't have permission for this action.",
         duration: 4,
       })
     } else if (status >= 500) {
       notify?.error({
-        message: "Server Error",
+        title: "Server Error",
         description: error.response?.data?.message || "Something went wrong. Please try again later.",
         duration: 4,
       })
     } else if (status && status >= 400) {
       notify?.error({
-        message: "Request Failed",
+        title: "Request Failed",
         description: error.response?.data?.message || error.message || "An unexpected error occurred.",
         duration: 4,
       })
     } else {
       notify?.error({
-        message: "Network Error",
+        title: "Network Error",
         description: "Unable to connect to the server. Please check your connection.",
         duration: 4,
       })
