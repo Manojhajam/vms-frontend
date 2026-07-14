@@ -17,6 +17,7 @@ export default function PreRegistrationForm() {
   const onFinish = async (values: PreRegistrationFormData) => {
     try {
       await apiClient.post("/visitors", values)
+      form.resetFields()
     } catch {
       // Error notification handled by apiClient interceptor
     }

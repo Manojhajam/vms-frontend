@@ -21,7 +21,7 @@ export default function LoginPage() {
     setLoading(true)
     try {
       await login(values.email, values.password)
-      router.push("/")
+      router.replace("/dashboard")
     } catch {
       // Error notification handled by apiClient interceptor
     } finally {
