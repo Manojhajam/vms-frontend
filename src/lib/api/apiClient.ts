@@ -3,6 +3,7 @@
 import axios from "axios"
 import { API_CONFIG } from "./config"
 import { getNotification } from "./notification"
+import { clearAuthToken } from "./auth"
 
 const apiClient = axios.create(API_CONFIG)
 
@@ -34,10 +35,18 @@ apiClient.interceptors.response.use(
     const notify = getNotification()
 
     if (status === 401) {
-      if (typeof window !== "undefined") {
-        localStorage.removeItem("access_token")
-        localStorage.removeItem("user")
-        window.location.href = "/login"
+      const isLoginRequest = error.config?.url === "/auth/login"
+      if (isLoginRequest) {
+        notify?.error({
+          message: "Login Failed",
+          description: error.response?.data?.message || "Invalid email or password.",
+          duration: 4,
+        })
+      } else {
+        if (typeof window !== "undefined") {
+          clearAuthToken()
+          window.location.href = "/login"
+        }
       }
     } else if (status === 403 && error.config?.method?.toLowerCase() !== "get") {
       notify?.error({
