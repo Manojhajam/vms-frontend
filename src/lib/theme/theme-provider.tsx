@@ -1,6 +1,6 @@
 "use client"
 
-import { createContext, useContext, useEffect, useState, type ReactNode } from "react"
+import { createContext, useContext, useEffect, useSyncExternalStore, type ReactNode } from "react"
 import { ConfigProvider, theme as antdTheme } from "antd"
 
 type Theme = "light" | "dark"
@@ -13,35 +13,38 @@ const ThemeContext = createContext<{
   toggleTheme: () => {},
 })
 
+let listeners: Array<() => void> = []
+
+function emitChange() {
+  for (const listener of listeners) listener()
+}
+
+function subscribe(callback: () => void) {
+  listeners = [...listeners, callback]
+  return () => {
+    listeners = listeners.filter((l) => l !== callback)
+  }
+}
+
+function getSnapshot(): Theme {
+  return (localStorage.getItem("theme") as Theme) ?? "light"
+}
+
+function getServerSnapshot(): Theme {
+  return "light"
+}
+
 export function ThemeProvider({ children }: { children: ReactNode }) {
-  const [theme, setTheme] = useState<Theme>("light")
-  const [mounted, setMounted] = useState(false)
+  const theme = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot)
 
   useEffect(() => {
-    const saved = localStorage.getItem("theme") as Theme | null
-    const initial = saved ?? "light"
-    setTheme(initial)
-    document.documentElement.classList.toggle("dark", initial === "dark")
-    setMounted(true)
-  }, [])
+    document.documentElement.classList.toggle("dark", theme === "dark")
+  }, [theme])
 
   const toggleTheme = () => {
-    setTheme((prev) => {
-      const next = prev === "light" ? "dark" : "light"
-      localStorage.setItem("theme", next)
-      document.documentElement.classList.toggle("dark", next === "dark")
-      return next
-    })
-  }
-
-  if (!mounted) {
-    return (
-      <ConfigProvider theme={{ algorithm: antdTheme.defaultAlgorithm }}>
-        <ThemeContext.Provider value={{ theme: "light", toggleTheme: () => {} }}>
-          {children}
-        </ThemeContext.Provider>
-      </ConfigProvider>
-    )
+    const next = theme === "light" ? "dark" : "light"
+    localStorage.setItem("theme", next)
+    emitChange()
   }
 
   return (

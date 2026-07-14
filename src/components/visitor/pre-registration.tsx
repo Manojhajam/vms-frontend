@@ -1,7 +1,6 @@
 "use client"
 
-import { useState } from "react"
-import { Form, Input, Select, Button, Result } from "antd"
+import { Form, Input, Select, Button } from "antd"
 import apiClient from "@/lib/api/apiClient"
 
 interface PreRegistrationFormData {
@@ -22,7 +21,6 @@ export default function PreRegistrationForm() {
       // Error notification handled by apiClient interceptor
     }
   }
-
 
   return (
     <div className="mx-auto max-w-lg">
