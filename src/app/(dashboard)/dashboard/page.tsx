@@ -1,8 +1,8 @@
 "use client"
 
-import { useEffect, useState } from "react"
-import { Table, Card, Row, Col, Statistic, Spin, Alert } from "antd"
-import { TeamOutlined } from "@ant-design/icons"
+import { useCallback, useEffect, useState } from "react"
+import { Table, Card, Row, Col, Statistic, Spin, Alert, Input } from "antd"
+import { TeamOutlined, SearchOutlined } from "@ant-design/icons"
 import {
   PieChart,
   Pie,
@@ -16,7 +16,12 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts"
-import { getVisitors, Visitor } from "@/services/visitor.service"
+import {
+  getVisitors,
+  getAllVisitors,
+  Visitor,
+  PaginationMeta,
+} from "@/services/visitor.service"
 
 const PURPOSE_COLORS: Record<string, string> = {
   business_meeting: "#1890ff",
@@ -40,12 +45,39 @@ const PURPOSE_LABELS: Record<string, string> = {
 
 export default function DashboardPage() {
   const [visitors, setVisitors] = useState<Visitor[]>([])
+  const [allVisitors, setAllVisitors] = useState<Visitor[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [search, setSearch] = useState("")
+  const [pagination, setPagination] = useState<PaginationMeta>({
+    total: 0,
+    page: 1,
+    limit: 10,
+    totalPages: 0,
+  })
+  const [tableLoading, setTableLoading] = useState(false)
+
+  const fetchVisitors = useCallback(async (page: number, limit: number, searchValue: string) => {
+    setTableLoading(true)
+    try {
+      const result = await getVisitors({ page, limit, search: searchValue || undefined })
+      setVisitors(result.data)
+      setPagination(result.meta)
+    } catch {
+      setError("Failed to load visitors.")
+    } finally {
+      setTableLoading(false)
+    }
+  }, [])
 
   useEffect(() => {
-    getVisitors()
-      .then(setVisitors)
+    Promise.all([
+      fetchVisitors(1, 10, ""),
+      getAllVisitors().catch(() => []),
+    ])
+      .then(([, allData]) => {
+        setAllVisitors(allData)
+      })
       .catch((err: { response?: { status?: number } }) => {
         if (err.response?.status === 403) {
           setError("Access Denied: You need Admin privileges to view visitors.")
@@ -54,7 +86,16 @@ export default function DashboardPage() {
         }
       })
       .finally(() => setLoading(false))
-  }, [])
+  }, [fetchVisitors])
+
+  const handleSearch = (value: string) => {
+    setSearch(value)
+    fetchVisitors(1, pagination.limit, value)
+  }
+
+  const handleTableChange = (page: number, pageSize: number) => {
+    fetchVisitors(page, pageSize, search)
+  }
 
   if (loading) {
     return (
@@ -69,14 +110,14 @@ export default function DashboardPage() {
   }
 
   const purposeData = Object.entries(
-    visitors.reduce<Record<string, number>>((acc, v) => {
+    allVisitors.reduce<Record<string, number>>((acc, v) => {
       acc[v.purpose_of_visit] = (acc[v.purpose_of_visit] || 0) + 1
       return acc
     }, {})
   ).map(([name, value]) => ({ name: PURPOSE_LABELS[name] || name, value }))
 
   const timeData = Object.entries(
-    visitors.reduce<Record<string, number>>((acc, v) => {
+    allVisitors.reduce<Record<string, number>>((acc, v) => {
       const date = new Date(v.createdAt).toLocaleDateString("en-US", {
         month: "short",
         day: "numeric",
@@ -111,7 +152,7 @@ export default function DashboardPage() {
       <Row gutter={[16, 16]} style={{ marginBottom: 24 }}>
         <Col xs={24} sm={8}>
           <Card>
-            <Statistic title="Total Visitors" value={visitors.length} prefix={<TeamOutlined />} />
+            <Statistic title="Total Visitors" value={pagination.total} prefix={<TeamOutlined />} />
           </Card>
         </Col>
         <Col xs={24} sm={8}>
@@ -119,7 +160,7 @@ export default function DashboardPage() {
             <Statistic
               title="Today"
               value={
-                visitors.filter((v) => {
+                allVisitors.filter((v) => {
                   const d = new Date(v.createdAt)
                   const now = new Date()
                   return d.toDateString() === now.toDateString()
@@ -134,7 +175,7 @@ export default function DashboardPage() {
             <Statistic
               title="This Week"
               value={
-                visitors.filter((v) => {
+                allVisitors.filter((v) => {
                   const d = new Date(v.createdAt)
                   const now = new Date()
                   const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
@@ -204,8 +245,33 @@ export default function DashboardPage() {
         </Col>
       </Row>
 
-      <Card title="All Visitors">
-        <Table dataSource={visitors} columns={columns} rowKey="id" pagination={{ pageSize: 10 }} />
+      <Card
+        title="All Visitors"
+        extra={
+          <Input.Search
+            placeholder="Search visitors..."
+            allowClear
+            enterButton={<><SearchOutlined /> Search</>}
+            onSearch={handleSearch}
+            style={{ width: 300 }}
+          />
+        }
+      >
+        <Table
+          dataSource={visitors}
+          columns={columns}
+          rowKey="id"
+          loading={tableLoading}
+          pagination={{
+            current: pagination.page,
+            pageSize: pagination.limit,
+            total: pagination.total,
+            showSizeChanger: true,
+            showTotal: (total) => `Total ${total} visitors`,
+            pageSizeOptions: ["10", "20", "50"],
+            onChange: handleTableChange,
+          }}
+        />
       </Card>
     </div>
   )

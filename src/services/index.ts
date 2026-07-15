@@ -1,3 +1,3 @@
 export { login } from "./auth.service"
-export { getVisitors } from "./visitor.service"
-export type { Visitor } from "./visitor.service"
+export { getVisitors, getAllVisitors } from "./visitor.service"
+export type { Visitor, PaginationMeta, VisitorQueryParams } from "./visitor.service"

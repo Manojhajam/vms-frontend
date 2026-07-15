@@ -11,12 +11,33 @@ export interface Visitor {
   updatedAt: string
 }
 
-interface VisitorListResponse {
-  message: string
-  data: Visitor[]
+export interface PaginationMeta {
+  total: number
+  page: number
+  limit: number
+  totalPages: number
 }
 
-export async function getVisitors(): Promise<Visitor[]> {
-  const response = await apiClient.get<VisitorListResponse>("/visitors")
+export interface VisitorListResponse {
+  message: string
+  data: Visitor[]
+  meta: PaginationMeta
+}
+
+export interface VisitorQueryParams {
+  page?: number
+  limit?: number
+  search?: string
+}
+
+export async function getVisitors(params?: VisitorQueryParams): Promise<VisitorListResponse> {
+  const response = await apiClient.get<VisitorListResponse>("/visitors", { params })
+  return response.data
+}
+
+export async function getAllVisitors(): Promise<Visitor[]> {
+  const response = await apiClient.get<VisitorListResponse>("/visitors", {
+    params: { limit: 10000 },
+  })
   return response.data.data
 }
