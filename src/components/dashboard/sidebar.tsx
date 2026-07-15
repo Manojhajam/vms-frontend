@@ -64,6 +64,7 @@ export default function DashboardSidebar({ children }: { children: React.ReactNo
         collapsed={collapsed}
         breakpoint="lg"
         theme="dark"
+        style={{ height: "100vh", position: "sticky", top: 0, overflow: "hidden" }}
       >
         <div className="flex h-8 items-center justify-center text-lg font-bold text-white">
           {collapsed ? "V" : "VMS"}
