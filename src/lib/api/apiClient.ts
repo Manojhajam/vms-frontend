@@ -3,7 +3,7 @@
 import axios from "axios"
 import { API_CONFIG } from "./config"
 import { getNotification } from "./notification"
-import { clearAuthToken } from "./auth"
+import { clearAuthToken } from "./token"
 
 const apiClient = axios.create(API_CONFIG)
 

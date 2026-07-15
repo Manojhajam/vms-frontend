@@ -12,7 +12,7 @@ import {
   MenuFoldOutlined,
   MenuUnfoldOutlined,
 } from "@ant-design/icons"
-import { clearAuthToken } from "@/lib/api/auth"
+import { clearAuthToken } from "@/lib/api/token"
 import { ThemeToggle } from "@/components/theme/theme-toggle"
 
 const { Sider, Header, Content } = Layout

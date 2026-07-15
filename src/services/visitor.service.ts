@@ -1,4 +1,4 @@
-import apiClient from "./apiClient"
+import apiClient from "@/lib/api/apiClient"
 
 export interface Visitor {
   id: number

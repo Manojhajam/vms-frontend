@@ -5,7 +5,7 @@ import { Form, Input, Button } from "antd"
 import { MailOutlined, LockOutlined } from "@ant-design/icons"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { login } from "@/lib/api/auth"
+import { login } from "@/services/auth.service"
 
 interface LoginForm {
   email: string

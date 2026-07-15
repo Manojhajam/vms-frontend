@@ -16,7 +16,7 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts"
-import { getVisitors, Visitor } from "@/lib/api/visitor"
+import { getVisitors, Visitor } from "@/services/visitor.service"
 
 const PURPOSE_COLORS: Record<string, string> = {
   business_meeting: "#1890ff",
