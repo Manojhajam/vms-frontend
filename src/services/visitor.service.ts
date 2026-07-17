@@ -6,6 +6,7 @@ export interface Visitor {
   address: string
   phone: string
   citizenship_no: string
+  visitor_type: "CITIZEN" | "VENDOR" | "CONTRACTOR" | "NGO" | "POLICE" | "OTHER"
   purpose_of_visit: string
   createdAt: string
   updatedAt: string

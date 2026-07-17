@@ -8,6 +8,7 @@ interface PreRegistrationFormData {
   address: string
   phone: string
   citizenship_no: string
+  visitor_type: "CITIZEN" | "VENDOR" | "CONTRACTOR" | "NGO" | "POLICE" | "OTHER"
   purpose_of_visit: string
 }
 
@@ -65,6 +66,22 @@ export default function PreRegistrationForm() {
           rules={[{ required: true, message: "Please enter citizenship number" }]}
         >
           <Input placeholder="Enter citizenship number" />
+        </Form.Item>
+
+        <Form.Item
+          label="Visitor Type"
+          name="visitor_type"
+          rules={[{ required: true, message: "Please select visitor type" }]}
+          initialValue="CITIZEN"
+        >
+          <Select placeholder="Select visitor type">
+            <Select.Option value="CITIZEN">Citizen</Select.Option>
+            <Select.Option value="VENDOR">Vendor</Select.Option>
+            <Select.Option value="CONTRACTOR">Contractor</Select.Option>
+            <Select.Option value="NGO">NGO</Select.Option>
+            <Select.Option value="POLICE">Police</Select.Option>
+            <Select.Option value="OTHER">Other</Select.Option>
+          </Select>
         </Form.Item>
 
         <Form.Item
