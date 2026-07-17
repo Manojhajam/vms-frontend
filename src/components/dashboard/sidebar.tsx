@@ -19,14 +19,10 @@ const { Sider, Header, Content } = Layout
 
 const menuItems = [
   { key: "/dashboard", icon: <DashboardOutlined />, label: "Dashboard" },
-  { key: "/visitors", icon: <TeamOutlined />, label: "Visitors" },
-  { key: "/pre-registration", icon: <FormOutlined />, label: "Pre-Registration" },
 ]
 
 const routeTitles: Record<string, string> = {
   "/dashboard": "Dashboard",
-  "/visitors": "Visitors",
-  "/pre-registration": "Pre-Registration",
 }
 
 export default function DashboardSidebar({ children }: { children: React.ReactNode }) {
