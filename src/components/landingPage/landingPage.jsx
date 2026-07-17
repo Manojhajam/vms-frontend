@@ -23,8 +23,8 @@ function Navbar() {
           <a href="#how-it-works" className="text-sm font-medium text-gray-600 transition-colors hover:text-gray-900 dark:text-gray-400 dark:hover:text-white">
             How It Works
           </a>
-          <Link href="/pre-registration" className="text-sm font-medium text-gray-600 transition-colors hover:text-gray-900 dark:text-gray-400 dark:hover:text-white">
-            Pre-Registration
+          <Link href="/visitors" className="text-sm font-medium text-gray-600 transition-colors hover:text-gray-900 dark:text-gray-400 dark:hover:text-white">
+            Register Visitor
           </Link>
         </div>
 
@@ -100,10 +100,10 @@ function Features() {
           <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
         </svg>
       ),
-      title: "Pre-Registration",
+      title: "Register Visitors",
       description:
         "Visitors can pre-register before arriving. Hosts receive instant notifications and visitors get a digital pass for seamless entry.",
-        route: "/pre-registration"
+        route: "/visitors",
     },
     {
       icon: (
