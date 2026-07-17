@@ -1,7 +1,7 @@
 "use client"
 
-import { Form, Input, Select, Button } from "antd"
-import { useRouter } from "next/navigation"
+import { useState } from "react"
+import { Form, Input, Select, Button, message } from "antd"
 import apiClient from "@/lib/api/apiClient"
 
 interface PreRegistrationFormData {
@@ -15,16 +15,23 @@ interface PreRegistrationFormData {
 
 export default function PreRegistrationForm() {
   const [form] = Form.useForm<PreRegistrationFormData>()
-  const router = useRouter()
+  const [submitting, setSubmitting] = useState(false)
 
   const onFinish = async (values: PreRegistrationFormData) => {
+    setSubmitting(true)
     try {
       const response = await apiClient.post("/visitors", values)
-      const visitorId = response.data.data.id
+      const visitorId = response.data?.data?.id
+      if (!visitorId) {
+        message.error("Registration succeeded but visitor ID was not returned.")
+        return
+      }
       form.resetFields()
-      router.push(`/visitors/${visitorId}/documents`)
+      window.location.href = `/visitors/${visitorId}/documents`
     } catch {
       // Error notification handled by apiClient interceptor
+    } finally {
+      setSubmitting(false)
     }
   }
 
@@ -105,7 +112,7 @@ export default function PreRegistrationForm() {
         </Form.Item>
 
         <Form.Item>
-          <Button type="primary" htmlType="submit" block>
+          <Button type="primary" htmlType="submit" block loading={submitting}>
             Submit Pre-Registration
           </Button>
         </Form.Item>

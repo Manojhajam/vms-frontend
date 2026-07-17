@@ -6,8 +6,6 @@ import { Layout, Menu, Button, App, theme } from "antd"
 import { ExclamationCircleOutlined } from "@ant-design/icons"
 import {
   DashboardOutlined,
-  TeamOutlined,
-  FormOutlined,
   LogoutOutlined,
   MenuFoldOutlined,
   MenuUnfoldOutlined,
