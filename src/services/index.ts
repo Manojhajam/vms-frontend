@@ -1,3 +1,5 @@
 export { login } from "./auth.service"
 export { getVisitors, getAllVisitors } from "./visitor.service"
 export type { Visitor, PaginationMeta, VisitorQueryParams } from "./visitor.service"
+export { getVisitorDocuments, createVisitorDocument, deleteVisitorDocument, getDocumentFileUrl } from "./visitor-document.service"
+export type { VisitorDocument, VisitorDocumentListResponse, VisitorDocumentQueryParams } from "./visitor-document.service"

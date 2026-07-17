@@ -1,6 +1,7 @@
 "use client"
 
 import { Form, Input, Select, Button } from "antd"
+import { useRouter } from "next/navigation"
 import apiClient from "@/lib/api/apiClient"
 
 interface PreRegistrationFormData {
@@ -14,11 +15,14 @@ interface PreRegistrationFormData {
 
 export default function PreRegistrationForm() {
   const [form] = Form.useForm<PreRegistrationFormData>()
+  const router = useRouter()
 
   const onFinish = async (values: PreRegistrationFormData) => {
     try {
-      await apiClient.post("/visitors", values)
+      const response = await apiClient.post("/visitors", values)
+      const visitorId = response.data.data.id
       form.resetFields()
+      router.push(`/visitors/${visitorId}/documents`)
     } catch {
       // Error notification handled by apiClient interceptor
     }
